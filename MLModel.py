@@ -3,6 +3,43 @@ import torch
 from torch import nn
 from kymatio.torch import Scattering2D
 
+
+import torch
+import torch.nn as nn
+
+
+class CNN_fedswap(nn.Module):
+    """在Semisupervised Distributed Learning With Non-IID Data for AIoT Service Platform(IEEE IOT)
+       客户端之间交换权重Fedswap论文中对fedswap图像分类任务的简单CNN
+       参数为：
+        simple CNN model with three 3 × 3 convolution layers
+         (the first with 64 channels followedby2× 2 max pooling,
+         the second with 128 channels,
+         and the third with 256 channels,
+         each developed with 2×2max pooling) and one fully connected layer.
+       """
+    def __init__(self):
+        super(CNN_fedswap, self).__init__()
+        # 第一个卷积层，输入通道数为3（彩色图像），输出通道数为64，卷积核大小为3x3
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=3)
+        # 最大池化层，窗口大小为2x2
+        self.pool = nn.MaxPool2d(2, 2)
+        # 第二个卷积层，输入通道数为64，输出通道数为128，卷积核大小为3x3
+        self.conv2 = nn.Conv2d(64, 128, kernel_size=3)
+        # 第三个卷积层，输入通道数为128，输出通道数为256，卷积核大小为3x3
+        self.conv3 = nn.Conv2d(128, 256, kernel_size=3)
+        # 全连接层，用于分类，输出大小为10（对应CIFAR-10的类别数）
+        self.fc1 = nn.Linear(256 * 2 * 2, 10)
+
+    def forward(self, x):
+        x = self.pool(torch.relu(self.conv1(x)))
+        x = self.pool(torch.relu(self.conv2(x)))
+        x = self.pool(torch.relu(self.conv3(x)))
+        x = x.view(-1, 256 * 2 * 2)  # 展平操作
+        x = self.fc1(x)
+        return x
+
+
 class MNIST_CNN(nn.Module):
     """
     End-to-end CNN model for MNIST and Fashion-MNIST, with Tanh activations. 

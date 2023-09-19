@@ -101,12 +101,13 @@ for t in tqdm(range(fl_param['tot_T'])):
     # newacc = fl_entity.global_update()
     # print("global_update:")
     # print(newacc)
-
-    if newacc<0.80 :
-        newacc=fl_entity.global_update()
-    else :
-        newacc=fl_entity.fedswap_global_update(t,2,2)
-        print("swap_update:")
+    #
+    # if newacc<0.80 :
+    #     newacc=fl_entity.global_update()
+    # else :
+    #     newacc=fl_entity.fedswap_global_update(t,2,2)
+    #     print("swap_update:")
+    newacc = fl_entity.fedswap_global_update(t, 2, 2)
     acc += [newacc]
     print("global epochs = {:d}, acc = {:.4f}".format(t+1, acc[-1]), " Time taken: %.2fs" % (time.time() - start_time))
 
